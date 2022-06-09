@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<br>
+<div class="container">
+    <h3>REPORT</h3>
+    <table class="table myTable">
+        <thead>
+            <tr>
+                <th colspan="2"><input type="text" class="form-control search_title" placeholder="Search Title" id="" onkeyup="myFunction()"></th>
+                <th colspan="2"><input type="text" class="form-control search_descr" placeholder="Search Description" id="" onkeyup="myFunction()"></th>
+                <th colspan=""><input type="text" class="form-control search_dest" placeholder="Search Reciever" id="" onkeyup="myFunction()"></th>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <th>Date Sent</th>
+                <th>Description</th>
+                <th>Attatchment</th>
+                <th>Sent To</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for memo in memos %}
+                <tr>
+                    <td>{{ memo.title }}</td>
+                    <td>{{ moment(memo.timestamp).fromNow() }}</td>
+                    <td>
+                        {{ memo.timestamp.date() }}
+                    </td>
+                    <td>
+                        {{ memo.note_attatched[:3]+'..'+memo.note_attatched[-4:] }}
+                        <a href="{{ url_for('memo.download_file', name=memo.note_attatched ) }}" target="_blank" style="text-decoration: none; color: black;">
+                            <i style="color: red;" class="bi bi-filetype-pdf"></i>
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </td>
+                    <td>{{ User.query.get(memo.reciever_id).username }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

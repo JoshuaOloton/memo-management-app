@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<br>
+<div class="container">
+    <h3>REPORT</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th><input type="text" class="form-control" placeholder="Search Title" id=""></th>
+                <th><input type="text" class="form-control" placeholder="Search Description" id=""></th>
+                <th><input type="text" class="form-control" placeholder="Search Date Added" id=""></th>
+                <th><input type="text" class="form-control" placeholder="Search Reciever" id=""></th>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Date Added</th>
+                <th>Sent To</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for memo in memos %}
+                <tr>
+                    <td>{{ memo.title }}</td>
+                    <td>{{ memo.description }}</td>
+                    <td>{{ memo.timestamp.date() }}</td>
+                    <td>{{ User.query.get(memo.reciever_id).username }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}
