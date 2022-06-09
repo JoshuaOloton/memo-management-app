@@ -1,1 +1,5 @@
-# memo-management-app
+# Memo Management App
+
+## Framework
+
+### Flask
