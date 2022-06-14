@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<br>
+<div class="container">
+    <!-- passing an empty string to the action attribute redirects the form back to the same route -->
+    <form action="" method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="">
+            <legend class="border-bottom">Update Memo</legend>
+            <div class="form-floating mb-3 mt-3">
+                {% if form.title.errors %}
+                    <input type="text" name="title" id="title" class="form-control is-invalid" placeholder="Enter Memo Title">
+                    <label for="title">Memo Title</label>
+                    <div class="invalid-feedback">
+                        {% for errors in form.title.errors %}
+                            {{ errors }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <input type="text" name="title" id="title" class="form-control" placeholder="Enter Memo Title">
+                    <label for="title">Memo Title</label>
+                {% endif %}
+            </div>
+
+            <div class="form-floating mb-3 mt-3">
+                {% if form.description.errors %}
+                    <textarea name="description" id="description" cols="30" rows="10" class="form-control is-invalid" placeholder="Enter Memo Description"></textarea>
+                    <label for="description">Memo Description</label>
+                    <div class="invalid-feedback">
+                        {% for errors in form.description.errors %}
+                            {{ errors }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <textarea name="description" id="description" cols="30" rows="10" class="form-control" placeholder="Enter Memo Description"></textarea>
+                    <label for="description">Memo Description</label>
+                {% endif %}
+            </div>
+
+            <div class="mb-3 mt-3">
+                {{ form.note_attached.label() }}
+                <!-- {{ form.note_attached(class="form-control-file") }} -->
+                <!-- this is equivalent to  -->
+                <input type="file" class="form-control-file" name="file" id="file">
+                {% if form.note_attached.errors %}
+                    {% for errors in form.note_attached.errors %}
+                        <span class="text-danger">{{ errors }}</span><br>
+                    {% endfor %}
+                {% endif %}
+                <!-- <br>
+                <input type="file" name="file" id="" required> -->
+            </div>
+        </fieldset>
+        <div class="mb-3 mt-3">
+            {{ form.submit(class = "btn btn-sm btn-outline-secondary") }}
+        </div>
+    </form>
+</div>
+
+{% endblock %}

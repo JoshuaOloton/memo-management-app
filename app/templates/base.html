@@ -28,31 +28,31 @@
                     <ul class="navbar-nav">
                         <!-- PUT YABATECH LOGO HERE -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('memo.recieved_memos',office='Office 1') }}">Recieved Memos</a>
+                            <a class="nav-link" href="{{ url_for('memo.recieved_memos',officename=current_user.office) }}">Recieved Memos</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('memo.sent_memos') }}">Sent Memos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url_for('memo.send_memo') }}" class="nav-link">Send Memo</a>
-                        </li>
-                        {% if User.query.get(session.get('id')).office == 'General' %}
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        <!-- only users in the general office department can have access to change reciever office dropdown -->
+                        {% if current_user.in_general() %}
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Change Reciever Office</a>
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    {{ session.get('reciever_office') }}
+                                </a>
                                 <ul class="dropdown-menu">
-                                    <!-- query all offices and show in nav dropdown -->
+                                    <!-- query all offices except the current one and show in nav dropdown -->
                                     {% for office in Office.query.all() %}
-                                        <li><a href="{{ url_for('memo.recieved_memos', office=office) }}" class="dropdown-item"></a>{{ office.office_name }}</li>
+                                        {% if office.office_name != current_user.office %}
+                                            <li><a href="{{ url_for('memo.recieved_memos',officename=office.office_name ) }}" class="dropdown-item">{{ office.office_name }}</a></li>
+                                        {% endif %}
                                     {% endfor %}
                                 </ul>
                             </li>
-                        {% endif %}
-                    </ul>
-                    <ul class="navbar-nav ms-auto">
-                        <span class="navbar-text">Office&#160;&#160;&#160;</span>
+                        {% else %}
+                            <span class="navbar-text">{{ current_user.office }}&#160;&#160;&#160;</span>
+                        {% endif %} 
                         <!-- &#160; adds non-breaking spacing -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                            <a class="nav-link" href="{{ url_for('auth.logout') }}" onclick="alert('You are now logged out! Please log in to continue');">
                                 <i class="bi bi-box-arrow-right"></i>
                                 Logout
                             </a>
@@ -64,6 +64,12 @@
                             <a href="{{ url_for('auth.login') }}" class="nav-link">
                                 <i class="bi bi-box-arrow-in-left"></i>
                                 Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('auth.register') }}" class="nav-link">
+                                <i class="bi bi-person-plus"></i>
+                                Signup
                             </a>
                         </li>
                     </ul>

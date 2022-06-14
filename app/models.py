@@ -9,24 +9,19 @@ class Memo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), nullable=False)
     description = db.Column(db.Text)
-    note_attatched = db.Column(db.String(130))
+    note_attached = db.Column(db.String(130))
     timestamp = db.Column(db.DateTime, default = datetime.now)
-    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    reciever_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    sender_office = db.Column(db.String(64), nullable=False)
+    reciever_id = db.Column(db.Integer, db.ForeignKey('office.id'))
 
     def __repr__(self):
-        return f'Memo: From <{self.sender_id}> To <{self.reciever_id}>'
+        return f'Memo: To <{self.reciever_id}>'
 
 class Office(db.Model):
+    __tablename__ = 'office'
     id = db.Column(db.Integer, primary_key=True)
     office_name = db.Column(db.String(64), nullable=False)
-
-    # @staticmethod
-    # def assign_offices():
-    #     for office in set(OFFICE_NAMES):
-    #         o = Office(office_name=office)
-    #         db.session.add(o)
-    #     db.session.commit()
+    recieved_memos = db.relationship('Memo', backref='reciever', lazy='dynamic')
 
     def __repr__(self):
         return f'Office: {self.office_name}'
@@ -35,21 +30,18 @@ class Office(db.Model):
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), unique=True,nullable=False)
-    email = db.Column(db.String(64), index=True, nullable=False)
+    username = db.Column(db.String(64), index=True, unique=True, nullable=False)
+    email = db.Column(db.String(64), nullable=False)
     password_hash = db.Column(db.String(130))
     office = db.Column(db.String(64), nullable=False)
-    sent_memos = db.relationship('Memo',
-                                foreign_keys=[Memo.sender_id],
-                                backref='sender', lazy=True)
-    recieved_memos = db.relationship('Memo',
-                                    foreign_keys=[Memo.reciever_id],
-                                    backref='reciever', lazy=True)
-
+    
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
         # dynamically assign every user object on creation to their predefined offices
         self.office = OFFICES[self.username]
+
+    def in_general(self):
+        return self.office == 'General'
 
     def __repr__(self):
         return f'User {self.id}'

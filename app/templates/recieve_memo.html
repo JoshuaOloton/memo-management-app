@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<br>
+<div class="container">
+    <!-- passing an empty string to the action attribute redirects the form back to the same route -->
+    <form action="" method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="">
+            <legend class="border-bottom">Recieve Memo</legend>
+            <div class="form-floating mb-3 mt-3">
+                {% if form.title.errors %}
+                    <input type="text" name="title" id="title" class="form-control is-invalid" placeholder="Enter Memo Title">
+                    <label for="title">Memo Title</label>
+                    <div class="invalid-feedback">
+                        {% for errors in form.title.errors %}
+                            {{ errors }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <input type="text" name="title" id="title" class="form-control" placeholder="Enter Memo Title">
+                    <label for="title">Memo Title</label>
+                {% endif %}
+            </div>
+
+            <div class="form-floating mb-3 mt-3">
+                {% if form.description.errors %}
+                    <textarea name="description" id="description" cols="30" rows="10" class="form-control is-invalid" placeholder="Enter Memo Description"></textarea>
+                    <label for="description">Memo Description</label>
+                    <div class="invalid-feedback">
+                        {% for errors in form.description.errors %}
+                            {{ errors }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <textarea name="description" id="description" cols="30" rows="10" class="form-control" placeholder="Enter Memo Description"></textarea>
+                    <label for="description">Memo Description</label>
+                {% endif %}
+            </div>
+
+            <div class="mb-3 mt-3">
+                {{ form.reciever.label(class="form-label") }}
+                {% if form.reciever.errors %}
+                    {{ form.reciever(class="form-select is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for errors in form.reciever.errors %}
+                            {{ errors }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {{ form.reciever(class="form-select") }}
+            </div>
+
+            <div class="mb-3 mt-3">
+                {{ form.sender_office.label(class="form-label") }}
+                {% if form.sender_office.errors %}
+                    {{ form.sender_office(class="form-select is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for errors in form.sender_office.errors %}
+                            {{ errors }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {{ form.sender_office(class="form-select") }}
+            </div>
+
+            <!-- <div class="form-floating mb-3 mt-3">
+                {% if form.reciever.errors %}
+                    <select name="reciever" id="reciever" class="form-select is-invalid">
+
+                        {% for office in Office.query.all() %}
+                            the memo sender office dropdown must not include the logged-in office as well as General(as General isnt really an office)
+                            {% if office.office_name != session.get('reciever_office') and office.office_name != 'General' %}
+                                <option value="{{ office.office_name }}">{{ office.office_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <label for="reciever" class="form-label">Sender Office</label>
+                    <div class="invalid-feedback">
+                        {% for errors in form.reciever.errors %}
+                            {{ errors }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div> -->
+            
+            <!-- <div class="form-floating mb-3 mt-3">
+                {% if form.sender_office.errors %}
+                    <select name="sender_office" id="sender_office" class="form-select is-invalid">
+
+                        {% for office in Office.query.all() %}
+                            the memo sender office dropdown must not include the logged-in office as well as General(as General isnt really an office)
+                            {% if office.office_name != session.get('reciever_office') and office.office_name != 'General' %}
+                                <option value="{{ office.office_name }}">{{ office.office_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <label for="sender_office" class="form-label">Sender Office</label>
+                    <div class="invalid-feedback">
+                        {% for errors in form.reciever.errors %}
+                            {{ errors }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div> -->
+
+            <div class="mb-3 mt-3">
+                {{ form.note_attached.label() }}
+                <!-- {{ form.note_attached(class="form-control-file") }} -->
+                <!-- this is equivalent to  -->
+                <input type="file" class="form-control-file" name="file" id="file">
+                {% if form.note_attached.errors %}
+                    {% for errors in form.note_attached.errors %}
+                        <span class="text-danger">{{ errors }}</span><br>
+                    {% endfor %}
+                {% endif %}
+                <!-- <br>
+                <input type="file" name="file" id="" required> -->
+            </div>
+
+            <!-- <div class="form-group">
+                {{ form.note_attached.label() }}
+                {{ form.note_attached(class="form-control-file") }}
+                {% if form.note_attached.errors %}
+                    {% for errors in form.note_attached.errors %}
+                        <span class="text-danger">{{ errors }}</span><br>
+                    {% endfor %}
+                {% endif %}
+            </div> -->
+        </fieldset>
+        <div class="mb-3 mt-3">
+            {{ form.submit(class = "btn btn-sm btn-outline-secondary") }}
+        </div>
+    </form>
+</div>
+
+{% endblock %}

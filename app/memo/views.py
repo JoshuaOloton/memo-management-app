@@ -1,10 +1,9 @@
-from flask import redirect, render_template, url_for, session, flash, request, send_from_directory
+from flask import redirect, render_template, url_for, session, flash, request, send_from_directory, current_app
 from . import memo
-from .forms import CreateMemoForm
+from .forms import RecieveMemoForm, UpdateMemoForm
 from ..decorators import login_required
-from ..models import Memo, User
+from ..models import Memo, User, Office
 from .. import db, create_app
-# from ..utils import allowed_file
 from werkzeug.utils import secure_filename
 import os
 
@@ -14,15 +13,21 @@ app = create_app()
 def download_file(name):
     return send_from_directory(app.config['UPLOAD_FOLDER'], name)
 
-@memo.route('/memos/new', methods=['GET','POST'])
+@memo.route('/memos/recieve/<officename>', methods=['GET','POST'])
 @login_required
-def send_memo():
-    form = CreateMemoForm()
-    user = User.query.get(session.get('id'))
+def recieve_memo(officename):
+    user = user = User.query.get(session.get('id'))
+    print(f'Office: {type(user.office)}')
+    # session['reciever_office'] = officename
+    form = RecieveMemoForm()
+    office = Office.query.filter_by(office_name=officename).first()
+    print(f"Title: {form.title.data}")
+    print(f"Description: {form.description.data}")
+    print(f"Reciever: {form.reciever.data}")
+    print(f"Data: {form.sender_office.data}")
+    print(form.validate_on_submit())
     if form.validate_on_submit():
-        reciever = User.query.filter_by(username=form.reciever.data).first()
         print(f'File: {request.files}')
-        print(f'Path: {app.root_path}')
         if 'file' not in request.files:
             flash('No file part in request','danger')
             return redirect(request.url)
@@ -33,34 +38,84 @@ def send_memo():
         if file:
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename))
+        reciever_office = Office.query.filter_by(office_name=form.reciever.data).first()
         memo = Memo(
             title=form.title.data,
             description=form.description.data,
-            note_attatched=filename,
-            sender_id=user.id,
-            reciever_id=reciever.id)
+            note_attached=filename,
+            sender_office = form.sender_office.data,
+            reciever_id=reciever_office.id)
         db.session.add(memo)
         db.session.commit()
-        flash('Memo sent successfully!', 'success')
-        return redirect(url_for('memo.recieved_memos', office='Office 1', name=filename))
+        flash('Memo recieved successfully!', 'success')
+        return redirect(url_for('memo.recieved_memos', officename=officename, name=filename))
+    # else:
+    #     flash('Error!', 'danger')
 
-    return render_template('create_memo.html', form=form)
+    return render_template('recieve_memo.html', form=form)
 
-@memo.route('/memos/sent')
+
+@memo.route('/memos/recieved/<officename>')
 @login_required
-def sent_memos():
-    user = User.query.get(session.get('id'))
-    # user = User.query.first()
-    memos = user.sent_memos
-    return render_template('sent_memos.html', memos=memos, User=User)
+def recieved_memos(officename):
+    page = request.args.get('page', 1, type=int)
+    session['reciever_office'] = officename
+    office = Office.query.filter_by(office_name=officename).first()
+    pagination = office.recieved_memos.paginate(page, per_page=current_app.config['MEMOS_PER_PAGE'],error_out=False)
+    memos = pagination.items
+    return render_template('recieved_memos.html', pagination=pagination, memos=memos, User=User)
 
-
-@memo.route('/memos/recieved/<office>')
+    
+@memo.route('/memos/recieved/<officename>/full')
 @login_required
-def recieved_memos(office):
-    user = User.query.get(session.get('id'))
-    # user = User.query.first()
-    memos = user.recieved_memos
-    return render_template('recieved_memos.html', memos=memos, User=User)
+def recieved_memos_full(officename):
+    session['reciever_office'] = officename
+    office = Office.query.filter_by(office_name=officename).first()
+    memos = office.recieved_memos
+    return render_template('recieved_memos_full.html', memos=memos, User=User)
 
+
+@memo.route('/memos/<int:memo_id>/delete')
+def delete_memo(memo_id):
+    memo = Memo.query.get_or_404(memo_id)
+    db.session.delete(memo)
+    db.session.commit()
+    flash('Memo deleted!', 'danger')
+    return redirect(url_for('memo.recieved_memos',officename=session.get('reciever_office')))
+
+    
+@memo.route('/memos/<int:memo_id>/update', methods=['GET','POST'])
+def update_memo(memo_id):
+    memo = Memo.query.get_or_404(memo_id)
+    print(f'Memo: {request.method}')
+    form = UpdateMemoForm()
+    if form.validate_on_submit():
+        if 'file' not in request.files:
+            flash('No file part in request','danger')
+            return redirect(url_for('main.index'))
+        file = request.files.get('file')
+        if file.filename == "":
+            flash('No file uploaded','danger')
+            return redirect(request.url)
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename))
+
+            memo.title = form.title.data
+            memo.description = form.description.data
+            memo.note_attached=filename
+            db.session.commit()
+        flash('Memo successfully updated!', 'success')
+        return redirect(url_for('memo.recieved_memos',oficename=session.get('reciever_office')))
+    elif request.method == 'GET':
+        form.title.data = memo.title
+        form.description.data = memo.description
+        form.note_attached.data = memo.note_attached
+    return render_template('update_memo.html', form=form)
+
+
+@memo.route('/memos/<int:memo_id>')
+def view_memo(memo_id):
+    memo = Memo.query.get_or_404(memo_id)
+    return render_template('memo.html', memo=memo)
         

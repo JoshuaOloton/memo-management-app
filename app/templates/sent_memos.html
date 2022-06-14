@@ -29,8 +29,8 @@
                         {{ memo.timestamp.date() }}
                     </td>
                     <td>
-                        {{ memo.note_attatched[:3]+'..'+memo.note_attatched[-4:] }}
-                        <a href="{{ url_for('memo.download_file', name=memo.note_attatched ) }}" target="_blank" style="text-decoration: none; color: black;">
+                        {{ memo.note_attached[:3]+'..'+memo.note_attached[-4:] }}
+                        <a href="{{ url_for('memo.download_file', name=memo.note_attached ) }}" target="_blank" style="text-decoration: none; color: black;">
                             <i style="color: red;" class="bi bi-filetype-pdf"></i>
                             <i class="bi bi-download"></i>
                         </a>

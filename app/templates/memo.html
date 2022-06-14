@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<br>
+<div class="container">
+    <h3>MEMOS</h3>
+    <table class="table myTable">
+        <thead>
+            <tr>
+                <th>Memo Title</th>
+                <th>Date Recieved</th>
+                <th>Description</th>
+                <th>Attatchment</th>
+                <th>Sender Office</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ memo.title }}</td>
+                <td>
+                    {{ memo.timestamp.date() }}
+                </td>
+                <td>{{ memo.description }}</td>
+                <td>
+                    <i style="color: red;" class="bi bi-filetype-pdf"></i>
+                    {{ memo.note_attached[:3]+'..'+memo.note_attached[-3:] }}
+                    <a href="{{ url_for('memo.download_file', name=memo.note_attached ) }} " target="_blank" style="text-decoration: none; color: black;">
+                        <i class="bi bi-download"></i>
+                    </a>
+                </td>
+                <td>{{ memo.sender_office }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <a href="{{ url_for('memo.update_memo', memo_id=memo.id) }}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-pen-fill"></i>
+        Edit
+    </a>&#160;
+    <a href="{{ url_for('memo.delete_memo', memo_id=memo.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this memo?');">
+    <!-- the onclick attribute prompts a warning before memo is deleted -->
+        <i class="bi bi-trash3-fill"></i>
+        Delete
+    </a>
+
+</div>
+
+{% endblock %}

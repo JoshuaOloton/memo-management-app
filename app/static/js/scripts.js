@@ -16,7 +16,7 @@ function myFunction() {
     // Loop through all table rows, and hide those who don't match the search query
     for (i = 1; i < tr.length; i++) {
       td1 = tr[i].getElementsByTagName("td")[0]; // index 0 SEARCHES the ITEMS columns
-      td2 = tr[i].getElementsByTagName("td")[1];
+      td2 = tr[i].getElementsByTagName("td")[2];
       td3 = tr[i].getElementsByTagName("td")[4];
       if (td1 && td2 && td3) {
         txtValue1 = td1.textContent || td1.innerText;
@@ -74,4 +74,86 @@ var table = document.getElementById("get");
 url = table.baseURI;
 window.location = url;
 console.log(url);
+}
+
+function delete_alert() {
+  // alert()
+}
+
+const OFFICES = {
+  user1: 'CITM',
+  user2: 'Bursary',
+  user3: 'Rectory',
+  user4: 'Registry',
+  user5: 'General',
+  user6: 'General',
+  user7: 'Registry',
+  user8: 'Rectory',
+  user9: 'Bursary',
+  user10: 'CITM',
+}
+const OFFICE_NAMES = ['CITM', 'Bursary', 'Rectory', 'Registry']
+
+
+function set_login_office() {
+  var usernameValue, inputText, usernameField, recieverField, c, no_options;
+
+  usernameField = document.getElementById("username");
+  recieverField = document.getElementById("reciever");
+  usernameValue = usernameField.value;
+
+  if (usernameValue in OFFICES) {
+    if (OFFICES[usernameValue] === 'General') {
+      // clear all selectfield options
+      if (recieverField.options.length > 0) {
+        no_options = recieverField.options.length;
+        // using no of options, iterate through the select input field removingeach option
+        for (let j = 0; j < no_options; j++) {
+          recieverField.remove(0);
+        }
+      }
+      for (let i = 0; i < OFFICE_NAMES.length; i++) {
+        c = document.createElement("option");
+        c.text = OFFICE_NAMES[i];
+        c.value = OFFICE_NAMES[i];
+        recieverField.add(c, i);
+      }
+    } else {
+      // clear all selectfield options
+      no_options = recieverField.options.length;
+      if (no_options > 0) {
+        // using no of options, iterate through the select input field removingeach option
+        for (let j = 0; j < no_options; j++) {
+          recieverField.remove(0);
+        }
+      }
+        c = document.createElement("option");
+        c.text = OFFICES[usernameValue];
+        c.value = OFFICES[usernameValue];
+        recieverField.add(c, 0);
+      }
+    }
+  }
+
+
+  function set_register_office() {
+    var usernameValue, inputText, usernameField, recieverField, c, no_options;
+  
+    usernameField = document.getElementById("username");
+    recieverField = document.getElementById("reciever");
+    usernameValue = usernameField.value;
+
+    if (usernameValue in OFFICES) {
+      if (recieverField.options.length > 0) {
+        no_options = recieverField.options.length;
+        // using no of options, iterate through the select input field removing each option
+        for (let j = 0; j < no_options; j++) {
+          recieverField.remove(0);
+        }
+      } 
+      c = document.createElement("option");
+      c.text = OFFICES[usernameValue];
+      c.value = OFFICES[usernameValue];
+      recieverField.options.add(c, 0);
+  }
 }
