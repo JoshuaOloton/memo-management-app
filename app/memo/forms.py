@@ -59,3 +59,6 @@ class UpdateMemoForm(FlaskForm):
     description = TextAreaField('Description', validators=[DataRequired(), Length(min=10)])
     note_attached = FileField('Attach Note', validators=[FileAllowed(['pdf'])])
     submit = SubmitField('Update Memo')
+
+class FilterMemoForm(FlaskForm):
+    pass

@@ -91,6 +91,11 @@ const OFFICES = {
   user8: 'Rectory',
   user9: 'Bursary',
   user10: 'CITM',
+  user11: 'CITM',
+  user12: 'Bursary',
+  user13: 'Rectory',
+  user14: 'Registry',
+  user15: 'General',
 }
 const OFFICE_NAMES = ['CITM', 'Bursary', 'Rectory', 'Registry']
 
@@ -133,6 +138,16 @@ function set_login_office() {
         recieverField.add(c, 0);
       }
     }
+    else {
+      // if usernameField value dowsnt match required entries, clear out selectfield options. it must be blank
+      if (recieverField.options.length > 0) {
+        no_options = recieverField.options.length;
+        // using no of options, iterate through the select input field removingeach option
+        for (let j = 0; j < no_options; j++) {
+          recieverField.remove(0);
+        }
+      }
+    }
   }
 
 
@@ -155,5 +170,15 @@ function set_login_office() {
       c.text = OFFICES[usernameValue];
       c.value = OFFICES[usernameValue];
       recieverField.options.add(c, 0);
+  }
+  else {
+    // if usernameField value dowsnt match required entries, clear out selectfield options. it must be blank
+    if (recieverField.options.length > 0) {
+      no_options = recieverField.options.length;
+      // using no of options, iterate through the select input field removingeach option
+      for (let j = 0; j < no_options; j++) {
+        recieverField.remove(0);
+      }
+    }
   }
 }

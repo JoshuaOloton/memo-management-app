@@ -1,11 +1,13 @@
 from flask import redirect, render_template, url_for, session, flash, request, send_from_directory, current_app
 from . import memo
-from .forms import RecieveMemoForm, UpdateMemoForm
+from .forms import RecieveMemoForm, UpdateMemoForm, FilterMemoForm
 from ..decorators import login_required
 from ..models import Memo, User, Office
 from .. import db, create_app
 from werkzeug.utils import secure_filename
+from sqlalchemy import func, and_
 import os
+from datetime import datetime
 
 app = create_app()
 
@@ -65,6 +67,23 @@ def recieved_memos(officename):
     memos = pagination.items
     return render_template('recieved_memos.html', pagination=pagination, memos=memos, User=User)
 
+
+@memo.route('/memos/recieved/<officename>/<start_date>/<end_date>')
+def filtered_memos(officename, start_date, end_date):
+    page = request.args.get('page', 1, type=int)
+
+    format = "%m-%d-%y"
+    start_date = datetime.strptime(start_date, format).date()
+    end_date = datetime.strptime(end_date, format).date()
+    filtr = func.date(Memo.timestamp)
+    office = Office.query.filter_by(office_name=officename).first()
+    pagination = office.recieved_memos.filter(
+        and_(filtr >= start_date, filtr <= end_date)).\
+        paginate(page, per_page=current_app.config['MEMOS_PER_PAGE'], error_out=False)
+
+    memos = pagination.items
+    return render_template('recieved_memos.html', pagination=pagination, memos=memos)
+
     
 @memo.route('/memos/recieved/<officename>/full')
 @login_required
@@ -118,4 +137,10 @@ def update_memo(memo_id):
 def view_memo(memo_id):
     memo = Memo.query.get_or_404(memo_id)
     return render_template('memo.html', memo=memo)
-        
+
+
+@memo.route('/ss')
+def filter_memos():
+    form = FilterMemoForm()
+    if form.validate_on_submit():
+        pass

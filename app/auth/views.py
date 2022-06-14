@@ -35,7 +35,7 @@ def register():
         user = User.query.filter_by(username=form.username.data).first()
         if form.username.data not in list(OFFICES.keys()):
             flash('Username not found!', 'danger')
-            return redirect(request.ur)
+            return redirect(request.url)
         user = User(username=form.username.data,
                     email=form.email.data,
                     password=form.password.data)
