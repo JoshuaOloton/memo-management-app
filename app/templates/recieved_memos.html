@@ -4,26 +4,49 @@
 
 <br>
 <div class="container">
-    <h3>RECIEVED MEMOS</h3>
+    <h3 style="display: inline-block;">RECIEVED MEMOS</h3>
+    {% if session.get('start_date') %}
+        <p style="display: inline-block;">
+        between {{ session.get('start_date')|truncate(16,True,'') }} and {{ session.get('end_date')[:-13] }}
+        <a style="display: inline-block; color: black;" href="{{ url_for('memo.filter_memos') }}">
+            <i class="bi bi-pencil-square"></i> 
+        </a>
+        </p>
+    {% endif %}
+    
     <table class="table myTable">
         <thead>
+            {% if session.get('start_date') or session.get('end_date') %}
+                <tr>
+                    <th colspan="2">
+                        <a href="{{ url_for('memo.filtered_memos_full', officename=session.get('reciever_office'), start_date=st_dt, end_date=end_dt) }}" style="text-decoration: none;"><input type="text" class="form-control search_title" placeholder="Search Title" id=""></a>
+                    </th>
+                    <th colspan="">
+                        <a href="{{ url_for('memo.filtered_memos_full', officename=session.get('reciever_office'), start_date=st_dt, end_date=end_dt) }}" style="text-decoration: none;"><input type="text" class="form-control search_descr" placeholder="Search Description" id=""></a>
+                    </th>
+                    <th colspan="2">
+                        <a href="{{ url_for('memo.filtered_memos_full', officename=session.get('reciever_office'), start_date=st_dt, end_date=end_dt) }}" style="text-decoration: none;"><input type="text" class="form-control search_source" placeholder="Search Sender Office" id=""></th></a>
+                    </th>
+                </tr>
+            {% else %}
+                <tr>
+                    <th colspan="2">
+                        <a href="{{ url_for('memo.recieved_memos_full', officename=session.get('reciever_office')) }}" style="text-decoration: none;"><input type="text" class="form-control search_title" placeholder="Search Title" id=""></a>
+                    </th>
+                    <th colspan="">
+                        <a href="{{ url_for('memo.recieved_memos_full', officename=session.get('reciever_office')) }}" style="text-decoration: none;"><input type="text" class="form-control search_descr" placeholder="Search Description" id=""></a>
+                    </th>
+                    <th colspan="2">
+                        <a href="{{ url_for('memo.recieved_memos_full', officename=session.get('reciever_office')) }}" style="text-decoration: none;"><input type="text" class="form-control search_source" placeholder="Search Sender Office" id=""></th></a>
+                    </th>
+                </tr>
+            {% endif %}
             <tr>
-                <th colspan="2">
-                    <a href="{{ url_for('memo.recieved_memos_full', officename=session.get('reciever_office')) }}" style="text-decoration: none;"><input type="text" class="form-control search_title" placeholder="Search Title" id=""></a>
-                </th>
-                <th colspan="">
-                    <a href="{{ url_for('memo.recieved_memos_full', officename=session.get('reciever_office')) }}" style="text-decoration: none;"><input type="text" class="form-control search_descr" placeholder="Search Description" id=""></a>
-                </th>
-                <th colspan="2">
-                    <a href="{{ url_for('memo.recieved_memos_full', officename=session.get('reciever_office')) }}" style="text-decoration: none;"><input type="text" class="form-control search_source" placeholder="Search Sender Office" id=""></th></a>
-                </th>
-            </tr>
-            <tr>
-                <th>Memo Title</th>
-                <th>Date Recieved</th>
-                <th>Description</th>
-                <th>Attatchment</th>
-                <th>Sender Office</th>
+                <th style="width: 17%;">Memo Title</th>
+                <th style="width: 16%;">Date Recieved</th>
+                <th style="width: 34%;">Description</th>
+                <th style="width: 18%;">Attatchment</th>
+                <th style="width: 15%;">Sender Office</th>
             </tr>
         </thead>
         <tbody>
@@ -46,7 +69,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{{ url_for('memo.recieve_memo', officename=current_user.office) }}" class="btn btn-sm btn-outline-secondary">
+    <a href="{{ url_for('memo.recieve_memo', officename=session.get('reciever_office')) }}" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-plus-circle-fill"></i>
         Recieve Memo
     </a>
@@ -74,7 +97,7 @@
             {% endfor %}
 
             
-            {% if not pagination.has_next %}
+            {% if not pagination.has_next %}    
             <li class="page-item disabled"><a class="page-link" href="{{ url_for('memo.recieved_memos', officename=session.get('reciever_office'), page=pagination.next_num) }}">&raquo;</a></li>
             {% else %}
             <li class="page-item" ><a class="page-link" href="{{ url_for('memo.recieved_memos', officename=session.get('reciever_office'), page=pagination.next_num) }}">&raquo;</a></li>
@@ -85,4 +108,4 @@
 
 {% endblock %}
 
-lorem30
+Lorem ipsum, dolor sit amet consectetur adipisicing elit. At, ut.

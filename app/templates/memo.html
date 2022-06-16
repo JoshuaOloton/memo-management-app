@@ -35,7 +35,7 @@
     </table>
     
     <a href="{{ url_for('memo.update_memo', memo_id=memo.id) }}" class="btn btn-sm btn-outline-secondary">
-        <i class="bi bi-pen-fill"></i>
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
         Edit
     </a>&#160;
     <a href="{{ url_for('memo.delete_memo', memo_id=memo.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this memo?');">

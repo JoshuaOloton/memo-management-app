@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields import StringField, TextAreaField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Length
+from wtforms.fields.html5 import DateField
 from ..models import User, Office
 from ..utils import OFFICE_NAMES
 
@@ -26,16 +27,19 @@ class RecieveMemoForm(FlaskForm):
         user = User.query.get_or_404(user_id)
         if user.in_general():
             office_name = session.get('reciever_office')
+            # for users with admin privileges(general office), this gives us the selected office at login
             office = Office.query.filter_by(office_name=office_name).first()
             gen_office = Office.query.filter_by(office_name='General').first()
-            list_ch = Office.query.all()
-            curr_index = list_ch.index(office)
-            gen_office_index = list_ch.index(gen_office)
-            list_ch.remove(office)
+            sender_office_list = Office.query.all()
+            curr_index = sender_office_list.index(office)
+            gen_office_index = sender_office_list.index(gen_office)
+            # remove logged-in office and general office from list of sender offices
+            sender_office_list.remove(office)
+            sender_office_list.remove(gen_office)
 
-            mapped_choices = map(lambda office: office.office_name, list_ch)
-            self.reciever.choices = list(mapped_choices)
-            self.sender_office.choices = list(map(lambda office: office.office_name, list_ch))
+            mapped_choices = map(lambda office: office.office_name, sender_office_list)
+            self.sender_office.choices = list(map(lambda office: office.office_name, sender_office_list))
+            self.reciever.choices = [session.get('reciever_office')]
         else:
             office_name = session.get('reciever_office')
             office = Office.query.filter_by(office_name=office_name).first()
@@ -43,13 +47,10 @@ class RecieveMemoForm(FlaskForm):
             list_ch = Office.query.all()
             curr_index = list_ch.index(office)
             gen_office_index = list_ch.index(gen_office)
-            # list_ch.pop(curr_index)
             list_ch.remove(office)
-            # list_ch.pop(gen_office_index-1)
             list_ch.remove(gen_office)
 
             mapped_choices = map(lambda office: office.office_name, list_ch)
-
             self.sender_office.choices = list(mapped_choices)
             self.reciever.choices = [user.office]
 
@@ -61,4 +62,8 @@ class UpdateMemoForm(FlaskForm):
     submit = SubmitField('Update Memo')
 
 class FilterMemoForm(FlaskForm):
-    pass
+    start_date = DateField('Start Date', validators=[DataRequired()])
+    end_date = DateField('End Date', validators=[DataRequired()])
+    submit = SubmitField('Obtain Filtered Memos')
+
+    

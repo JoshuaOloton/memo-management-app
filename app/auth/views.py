@@ -55,6 +55,8 @@ def register():
 def logout():
     session.pop('id', None)
     session.pop('reciever_office', None)
+    session.pop('start_date', None)
+    session.pop('end_date', None)
     session['logged_in'] = False
     # flash('You are logged out!','danger')
     return redirect(url_for('main.index'))

@@ -19,7 +19,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <input type="text" name="title" id="title" class="form-control" placeholder="Enter Memo Title">
+                    <input type="text" name="title" id="title" class="form-control" placeholder="Enter Memo Title" value="{{ a }}">
                     <label for="title">Memo Title</label>
                 {% endif %}
             </div>
@@ -34,7 +34,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <textarea name="description" id="description" cols="30" rows="10" class="form-control" placeholder="Enter Memo Description"></textarea>
+                    <textarea name="description" id="description" cols="30" rows="10" class="form-control" placeholder="Enter Memo Description">{{ b }}</textarea>
                     <label for="description">Memo Description</label>
                 {% endif %}
             </div>
@@ -43,7 +43,7 @@
                 {{ form.note_attached.label() }}
                 <!-- {{ form.note_attached(class="form-control-file") }} -->
                 <!-- this is equivalent to  -->
-                <input type="file" class="form-control-file" name="file" id="file">
+                <input type="file" class="form-control-file" name="file" id="file" value="{{ c }}">
                 {% if form.note_attached.errors %}
                     {% for errors in form.note_attached.errors %}
                         <span class="text-danger">{{ errors }}</span><br>

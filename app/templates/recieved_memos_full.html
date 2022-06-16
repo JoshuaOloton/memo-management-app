@@ -4,21 +4,29 @@
 
 <br>
 <div class="container">
-    <h3>RECIEVED MEMOS</h3>
+    <h3 style="display: inline-block;">RECIEVED MEMOS</h3>
+    {% if session.get('start_date') %}
+        <p style="display: inline-block;">
+        between {{ session.get('start_date') }} and {{ session.get('end_date')[:-13] }}
+        <a style="display: inline-block; color: black;" href="{{ url_for('memo.filter_memos') }}">
+            <i class="bi bi-pencil-square"></i>
+        </a>    
+        </p>
+    {% endif %}
     <table class="table myTable">
         <thead>
             <tr>
-                <th colspan="2"><input type="text" class="form-control search_title" placeholder="Search Title" id="" onkeyup="myFunction()"></th>
+                <th colspan="2"><input type="text" class="form-control search_title" placeholder="Search Title" id="" onkeyup="myFunction()"></th>  
                 <th colspan=""><input type="text" class="form-control search_descr" placeholder="Search Description" id="" onkeyup="myFunction()"></th>
                 <!-- <th><input type="text" class="form-control" placeholder="Search Date Added" id=""></th> -->
                 <th colspan="2"><input type="text" class="form-control search_source" placeholder="Search Sender Office" id="" onkeyup="myFunction()"></th>
             </t r>
             <tr>
-                <th>Memo Title</th>
-                <th>Date Recieved</th>
-                <th>Description</th>
-                <th>Attatchment</th>
-                <th>Sender Office</th>
+                <th style="width: 17%;">Memo Title</th>
+                <th style="width: 16%;">Date Recieved</th>
+                <th style="width: 34%;">Description</th>
+                <th style="width: 18%;">Attatchment</th>
+                <th style="width: 15%;">Sender Office</th>
             </tr>
         </thead>
         <tbody>
@@ -41,7 +49,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{{ url_for('memo.recieve_memo', officename=current_user.office) }}" class="btn btn-sm btn-outline-secondary">
+    <a href="{{ url_for('memo.recieve_memo', officename=session.get('reciever_office')) }}" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-plus-circle-fill"></i>
         Recieve Memo
     </a>

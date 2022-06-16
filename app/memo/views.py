@@ -60,6 +60,10 @@ def recieve_memo(officename):
 @memo.route('/memos/recieved/<officename>')
 @login_required
 def recieved_memos(officename):
+    print(f"Lala: {session.get('reciever_office')}")
+    # pop start date and end dates from session if they exist
+    session.pop('start_date', None)
+    session.pop('end_date', None)
     page = request.args.get('page', 1, type=int)
     session['reciever_office'] = officename
     office = Office.query.filter_by(office_name=officename).first()
@@ -71,8 +75,9 @@ def recieved_memos(officename):
 @memo.route('/memos/recieved/<officename>/<start_date>/<end_date>')
 def filtered_memos(officename, start_date, end_date):
     page = request.args.get('page', 1, type=int)
+    print('HAaaaaa')
 
-    format = "%m-%d-%y"
+    format = "%Y-%m-%d"
     start_date = datetime.strptime(start_date, format).date()
     end_date = datetime.strptime(end_date, format).date()
     filtr = func.date(Memo.timestamp)
@@ -82,7 +87,20 @@ def filtered_memos(officename, start_date, end_date):
         paginate(page, per_page=current_app.config['MEMOS_PER_PAGE'], error_out=False)
 
     memos = pagination.items
-    return render_template('recieved_memos.html', pagination=pagination, memos=memos)
+    return render_template('recieved_memos.html', pagination=pagination, memos=memos, st_dt=start_date, end_dt=end_date)
+
+@memo.route('/memos/recieved/<officename>/<start_date>/<end_date>/full')
+def filtered_memos_full(officename, start_date, end_date):
+    page = request.args.get('page', 1, type=int)
+
+    format = "%Y-%m-%d"
+    start_date = datetime.strptime(start_date, format).date()
+    end_date = datetime.strptime(end_date, format).date()
+    filtr = func.date(Memo.timestamp)
+    office = Office.query.filter_by(office_name=officename).first()
+    memos = office.recieved_memos.filter(and_(filtr >= start_date, filtr <= end_date))
+
+    return render_template('recieved_memos_full.html', memos=memos)
 
     
 @memo.route('/memos/recieved/<officename>/full')
@@ -105,6 +123,7 @@ def delete_memo(memo_id):
     
 @memo.route('/memos/<int:memo_id>/update', methods=['GET','POST'])
 def update_memo(memo_id):
+    filename=''
     memo = Memo.query.get_or_404(memo_id)
     print(f'Memo: {request.method}')
     form = UpdateMemoForm()
@@ -125,12 +144,12 @@ def update_memo(memo_id):
             memo.note_attached=filename
             db.session.commit()
         flash('Memo successfully updated!', 'success')
-        return redirect(url_for('memo.recieved_memos',oficename=session.get('reciever_office')))
+        return redirect(url_for('memo.recieved_memos',officename=session.get('reciever_office')))
     elif request.method == 'GET':
         form.title.data = memo.title
         form.description.data = memo.description
         form.note_attached.data = memo.note_attached
-    return render_template('update_memo.html', form=form)
+    return render_template('update_memo.html', form=form, a=form.title.data,b=form.description.data,c=memo.note_attached)
 
 
 @memo.route('/memos/<int:memo_id>')
@@ -139,8 +158,15 @@ def view_memo(memo_id):
     return render_template('memo.html', memo=memo)
 
 
-@memo.route('/ss')
+@memo.route('/memos/filter', methods=['GET','POST'])
 def filter_memos():
     form = FilterMemoForm()
+    print(f"hehe: {session.get('reciever_office')}")
     if form.validate_on_submit():
-        pass
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+        session['start_date'] = start_date
+        session['end_date'] = end_date
+        print(start_date)
+        return redirect(url_for('memo.filtered_memos',officename=session.get('reciever_office'), start_date=form.start_date.data, end_date=form.end_date.data))
+    return render_template('filter_memos.html', form=form)
