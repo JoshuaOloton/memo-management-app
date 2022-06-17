@@ -7,9 +7,9 @@ from datetime import datetime
 class Memo(db.Model):
     __tablename__ = 'memo'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
+    title = db.Column(db.String(128), nullable=False)
     description = db.Column(db.Text)
-    note_attached = db.Column(db.String(130))
+    note_attached = db.Column(db.String(256))
     timestamp = db.Column(db.DateTime, default = datetime.now)
     sender_office = db.Column(db.String(64), nullable=False)
     reciever_id = db.Column(db.Integer, db.ForeignKey('office.id'))

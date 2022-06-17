@@ -1,18 +1,30 @@
 // search bars for title, description and reciever
 function myFunction() {
     // Declare variables
-    var title_input, descr_input, source_input, title_filter, descr_filter, source_filter, table, tr, td1, td2, td3, i, txtValue1, txtValue2, txtValue3;
+    var title_input, descr_input, source_input, title_filter, descr_filter, source_filter, table, tr, td1, td2, td3, i, j,txtValue1, txtValue2, txtValue3;
 
+    // obtain input fields by className
     title_input = document.getElementsByClassName("search_title")[0];
     descr_input = document.getElementsByClassName("search_descr")[0];
     source_input = document.getElementsByClassName("search_source")[0];
 
+    // obtain search queries from each field
     title_filter = title_input.value.toUpperCase();
     descr_filter = descr_input.value.toUpperCase();
     source_filter = source_input.value.toUpperCase();
     table = document.getElementsByClassName("myTable")[0];
     tr = table.getElementsByTagName("tr");
+
+    if (!title_filter && !descr_filter && !source_filter) {
+      for (j = 2; j < tr.length; j++) {
+        tr[j].style.display = "none";
+      }
+    }
   
+    // for (j = 0; j < tr.length; j++) {
+    //   tr[j].style.display = "none";
+    // }
+    
     // Loop through all table rows, and hide those who don't match the search query
     for (i = 1; i < tr.length; i++) {
       td1 = tr[i].getElementsByTagName("td")[0]; // index 0 SEARCHES the ITEMS columns
@@ -30,29 +42,6 @@ function myFunction() {
       }
     }
   }
-
-// search bar for items alone
-function myFunc() {
-  // Declare variables
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementsByClassName("search_item")[0];
-  filter = input.value.toUpperCase();
-  table = document.getElementsByClassName("myTable")[0];
-  tr = table.getElementsByTagName("tr");
-
-  // Loop through all table rows, and hide those who don't match the search query
-  for (i = 1; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0]; // index 0 SEARCHES the ITEMS columns
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
 
 // display only 5 records per row in home report page
 function testFunction() {
@@ -76,9 +65,6 @@ window.location = url;
 console.log(url);
 }
 
-function delete_alert() {
-  // alert()
-}
 
 const OFFICES = {
   user1: 'CITM',

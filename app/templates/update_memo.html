@@ -11,7 +11,7 @@
             <legend class="border-bottom">Update Memo</legend>
             <div class="form-floating mb-3 mt-3">
                 {% if form.title.errors %}
-                    <input type="text" name="title" id="title" class="form-control is-invalid" placeholder="Enter Memo Title">
+                    <input type="text" name="title" id="title" class="form-control is-invalid" placeholder="Enter Memo Title" value="{{ memo_title }}" >
                     <label for="title">Memo Title</label>
                     <div class="invalid-feedback">
                         {% for errors in form.title.errors %}
@@ -19,14 +19,14 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <input type="text" name="title" id="title" class="form-control" placeholder="Enter Memo Title" value="{{ a }}">
+                    <input type="text" name="title" id="title" class="form-control" placeholder="Enter Memo Title" value="{{ memo_title }}" >
                     <label for="title">Memo Title</label>
                 {% endif %}
             </div>
 
             <div class="form-floating mb-3 mt-3">
                 {% if form.description.errors %}
-                    <textarea name="description" id="description" cols="30" rows="10" class="form-control is-invalid" placeholder="Enter Memo Description"></textarea>
+                    <textarea name="description" id="description" cols="30" rows="10" class="form-control is-invalid" placeholder="Enter Memo Description">{{ memo_description }}</textarea>
                     <label for="description">Memo Description</label>
                     <div class="invalid-feedback">
                         {% for errors in form.description.errors %}
@@ -34,24 +34,23 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <textarea name="description" id="description" cols="30" rows="10" class="form-control" placeholder="Enter Memo Description">{{ b }}</textarea>
+                    <textarea name="description" id="description" cols="30" rows="10" class="form-control" placeholder="Enter Memo Description">{{ memo_description }}</textarea>
                     <label for="description">Memo Description</label>
                 {% endif %}
             </div>
 
+            <p>Memo Note: {{ memo_note }}</p>
+            
             <div class="mb-3 mt-3">
-                {{ form.note_attached.label() }}
-                <!-- {{ form.note_attached(class="form-control-file") }} -->
                 <!-- this is equivalent to  -->
-                <input type="file" class="form-control-file" name="file" id="file" value="{{ c }}">
+                <input type="file" class="form-control-file" name="file" id="file">
                 {% if form.note_attached.errors %}
                     {% for errors in form.note_attached.errors %}
                         <span class="text-danger">{{ errors }}</span><br>
                     {% endfor %}
                 {% endif %}
-                <!-- <br>
-                <input type="file" name="file" id="" required> -->
             </div>
+           
         </fieldset>
         <div class="mb-3 mt-3">
             {{ form.submit(class = "btn btn-sm btn-outline-secondary") }}

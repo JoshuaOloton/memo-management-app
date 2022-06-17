@@ -2,9 +2,11 @@ from flask import Flask
 from config import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_moment import Moment
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
 moment = Moment()
+migrate = Migrate()
 
 def create_app(config_name='default'):
     app = Flask(__name__)
@@ -12,6 +14,7 @@ def create_app(config_name='default'):
 
     db.init_app(app)
     moment.init_app(app)
+    migrate.init_app(app, db)
 
     # register blueprint(s)
     from .main import main as main_blueprint

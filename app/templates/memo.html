@@ -8,11 +8,11 @@
     <table class="table myTable">
         <thead>
             <tr>
-                <th>Memo Title</th>
-                <th>Date Recieved</th>
-                <th>Description</th>
-                <th>Attatchment</th>
-                <th>Sender Office</th>
+                <th style="width: 17%;">Memo Title</th>
+                <th style="width: 16%;">Date Recieved</th>
+                <th style="width: 34%;">Description</th>
+                <th style="width: 18%;">Attatchment</th>
+                <th style="width: 15%;">Sender Office</th>
             </tr>
         </thead>
         <tbody>
@@ -38,11 +38,6 @@
         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
         Edit
     </a>&#160;
-    <a href="{{ url_for('memo.delete_memo', memo_id=memo.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this memo?');">
-    <!-- the onclick attribute prompts a warning before memo is deleted -->
-        <i class="bi bi-trash3-fill"></i>
-        Delete
-    </a>
 
 </div>
 

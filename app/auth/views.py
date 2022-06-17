@@ -16,7 +16,6 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        print(f"Validate:{request.form}")
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.verify_password(form.password.data): 
             session['id'] = user.id
