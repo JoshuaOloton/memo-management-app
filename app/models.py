@@ -40,9 +40,6 @@ class User(db.Model):
         # dynamically assign every user object on creation to their predefined offices
         self.office = OFFICES[self.username]
 
-    def in_general(self):
-        return self.office == 'General'
-
     def __repr__(self):
         return f'User {self.id}'
 

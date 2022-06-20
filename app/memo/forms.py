@@ -25,34 +25,14 @@ class RecieveMemoForm(FlaskForm):
         # the lambda func is passes to every element of the list_choices array
         user_id = session.get('id')
         user = User.query.get_or_404(user_id)
-        if user.in_general():
-            office_name = session.get('reciever_office')
-            # for users with admin privileges(general office), this gives us the selected office at login
-            office = Office.query.filter_by(office_name=office_name).first()
-            gen_office = Office.query.filter_by(office_name='General').first()
-            sender_office_list = Office.query.all()
-            curr_index = sender_office_list.index(office)
-            gen_office_index = sender_office_list.index(gen_office)
-            # remove logged-in office and general office from list of sender offices
-            sender_office_list.remove(office)
-            sender_office_list.remove(gen_office)
+        office_name = session.get('reciever_office')    # get user office name
+        office = Office.query.filter_by(office_name=office_name).first()    # fetch Office model
+        offices = Office.query.all()
+        offices.remove(office)
 
-            mapped_choices = map(lambda office: office.office_name, sender_office_list)
-            self.sender_office.choices = list(map(lambda office: office.office_name, sender_office_list))
-            self.reciever.choices = [session.get('reciever_office')]
-        else:
-            office_name = session.get('reciever_office')
-            office = Office.query.filter_by(office_name=office_name).first()
-            gen_office = Office.query.filter_by(office_name='General').first()
-            list_ch = Office.query.all()
-            curr_index = list_ch.index(office)
-            gen_office_index = list_ch.index(gen_office)
-            list_ch.remove(office)
-            list_ch.remove(gen_office)
-
-            mapped_choices = map(lambda office: office.office_name, list_ch)
-            self.sender_office.choices = list(mapped_choices)
-            self.reciever.choices = [user.office]
+        mapped_choices = map(lambda office: office.office_name, offices)
+        self.sender_office.choices = list(mapped_choices)
+        self.reciever.choices = [user.office]
 
 
 class UpdateMemoForm(FlaskForm):
@@ -65,5 +45,10 @@ class FilterMemoForm(FlaskForm):
     start_date = DateField('Start Date', validators=[DataRequired()])
     end_date = DateField('End Date', validators=[DataRequired()])
     submit = SubmitField('Obtain Filtered Memos')
+
+
+class SendMemoForm(FlaskForm):
+    # recipient 
+    pass
 
     

@@ -29,7 +29,7 @@ with app.app_context():
                     o = Office(office_name=office)
                     db.session.add(o)
             db.session.commit()
-    except:  # the above block was running into an error
+    except:  # rollback commit if the above block ran into an error
         db.session.rollback()
 
 if __name__ == "__main__":

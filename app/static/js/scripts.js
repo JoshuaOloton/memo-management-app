@@ -71,17 +71,14 @@ const OFFICES = {
   user2: 'Bursary',
   user3: 'Rectory',
   user4: 'Registry',
-  user5: 'General',
-  user6: 'General',
-  user7: 'Registry',
-  user8: 'Rectory',
-  user9: 'Bursary',
-  user10: 'CITM',
-  user11: 'CITM',
-  user12: 'Bursary',
-  user13: 'Rectory',
-  user14: 'Registry',
-  user15: 'General',
+  user5: 'Registry',
+  user6: 'Rectory',
+  user7: 'Bursary',
+  user8: 'CITM',
+  user9: 'CITM',
+  user10: 'Bursary',
+  user11: 'Rectory',
+  user12: 'Registry',
 }
 const OFFICE_NAMES = ['CITM', 'Bursary', 'Rectory', 'Registry']
 
@@ -94,37 +91,18 @@ function set_login_office() {
   usernameValue = usernameField.value;
 
   if (usernameValue in OFFICES) {
-    if (OFFICES[usernameValue] === 'General') {
-      // clear all selectfield options
-      if (recieverField.options.length > 0) {
-        no_options = recieverField.options.length;
-        // using no of options, iterate through the select input field removingeach option
-        for (let j = 0; j < no_options; j++) {
-          recieverField.remove(0);
-        }
-      }
-      for (let i = 0; i < OFFICE_NAMES.length; i++) {
-        c = document.createElement("option");
-        c.text = OFFICE_NAMES[i];
-        c.value = OFFICE_NAMES[i];
-        recieverField.add(c, i);
-      }
-    } else {
-      // clear all selectfield options
-      no_options = recieverField.options.length;
-      if (no_options > 0) {
-        // using no of options, iterate through the select input field removingeach option
-        for (let j = 0; j < no_options; j++) {
-          recieverField.remove(0);
-        }
-      }
-        c = document.createElement("option");
-        c.text = OFFICES[usernameValue];
-        c.value = OFFICES[usernameValue];
-        recieverField.add(c, 0);
+    no_options = recieverField.options.length;
+    if (no_options > 0) {
+      // using no of options, iterate through the select input field removing each existing option
+      for (let j = 0; j < no_options; j++) {
+        recieverField.remove(0);
       }
     }
-    else {
+    c = document.createElement("option");
+    c.text = OFFICES[usernameValue];
+    c.value = OFFICES[usernameValue];
+    recieverField.add(c, 0);
+  } else {
       // if usernameField value dowsnt match required entries, clear out selectfield options. it must be blank
       if (recieverField.options.length > 0) {
         no_options = recieverField.options.length;
@@ -133,29 +111,29 @@ function set_login_office() {
           recieverField.remove(0);
         }
       }
-    }
   }
+}
 
 
-  function set_register_office() {
-    var usernameValue, inputText, usernameField, recieverField, c, no_options;
-  
-    usernameField = document.getElementById("username");
-    recieverField = document.getElementById("reciever");
-    usernameValue = usernameField.value;
+function set_register_office() {
+  var usernameValue, inputText, usernameField, recieverField, c, no_options;
 
-    if (usernameValue in OFFICES) {
-      if (recieverField.options.length > 0) {
-        no_options = recieverField.options.length;
-        // using no of options, iterate through the select input field removing each option
-        for (let j = 0; j < no_options; j++) {
-          recieverField.remove(0);
-        }
-      } 
-      c = document.createElement("option");
-      c.text = OFFICES[usernameValue];
-      c.value = OFFICES[usernameValue];
-      recieverField.options.add(c, 0);
+  usernameField = document.getElementById("username");
+  recieverField = document.getElementById("reciever");
+  usernameValue = usernameField.value;
+
+  if (usernameValue in OFFICES) {
+    if (recieverField.options.length > 0) {
+      no_options = recieverField.options.length;
+      // using no of options, iterate through the select input field removing each option
+      for (let j = 0; j < no_options; j++) {
+        recieverField.remove(0);
+      }
+    } 
+    c = document.createElement("option");
+    c.text = OFFICES[usernameValue];
+    c.value = OFFICES[usernameValue];
+    recieverField.options.add(c, 0);
   }
   else {
     // if usernameField value dowsnt match required entries, clear out selectfield options. it must be blank
