@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<br>
+<div class="container">
+    <!-- passing an empty string to the action attribute redirects the form back to the same route -->
+    <form action="" method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend class="border-bottom"><h4>Send Memo</h4></legend>
+            <br>
+            {{ form.recipient_offices.label() }}
+            <br>
+            <div class="form-floating mb-3 mt-3">
+                {% if form.recipient_offices.errors %}
+                    {{ form.recipient_offices(class="selectpicker is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for errors in form.recipient_offices.errors %}
+                            {{ errors }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.recipient_offices(class="selectpicker", **{"data-live-search": "true"}) }}
+                {% endif %} 
+            </div>    
+            <div class="mb-3 mt-3">
+                {{ form.submit(class="btn btn-outline-secondary") }}
+                <!-- <input type="submit" value="Submits"> -->
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+{% endblock %}

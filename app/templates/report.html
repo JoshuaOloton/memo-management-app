@@ -26,7 +26,7 @@
                     <td>{{ memo.title }}</td>
                     <td>{{ memo.description }}</td>
                     <td>{{ memo.timestamp.date() }}</td>
-                    <td>{{ User.query.get(memo.reciever_id).username }}</td>
+                    <td>{{ User.query.get(memo.office_reciever_id).username }}</td>
                 </tr>
             {% endfor %}
         </tbody>

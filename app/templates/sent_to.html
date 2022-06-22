@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<br>
+<div class="container">
+    <h3>RECIEVED MEMOS</h3>
+    {% if session.get('start_date') %}
+        <p style="display: inline-block;">
+        between {{ session.get('start_date')|truncate(16,True,'') }} and {{ session.get('end_date')[:-13] }}
+        <a style="display: inline-block; color: black;" href="{{ url_for('memo.filter_memos') }}">
+            <i class="bi bi-pencil-square"></i> 
+        </a>
+        </p>
+    {% endif %}
+    
+    <table class="myTable" id="example">
+        <thead>
+            <tr>
+                <th>Memo Title</th>
+                <th>Date Recieved</th>
+                <th>Description</th>
+                <th>Attatchment</th>
+                <th>Sender Office</th>
+                <th>Recieved By</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for memo in memos %}
+                <tr>
+                    <td><a href="{{ url_for('memo.view_memo', memo_id=memo.id) }}" style="color: black;">{{ memo.title }}</a></td>
+                    <td>
+                        {{ memo.timestamp.date() }}
+                    </td>
+                    <td>{{ memo.description }}</td>
+                    <td>
+                        <i style="color: red;" class="bi bi-filetype-pdf"></i>
+                        {{ memo.note_attached[:3]+'..'+memo.note_attached[-3:] }}
+                        <a href="{{ url_for('memo.download_file', name=memo.note_attached ) }} " target="_blank" style="text-decoration: none; color: black;">
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </td>
+                <td>{{ memo.sender_office }}</td>
+                <td>
+                    {{ memo.recieved_by }}
+                    {% if memo.sent %}
+                    <p style="display: inline-block;" class="fs-6 text-success">Sent</p>
+                    {% endif %}
+                </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('memo.recieve_memo', officename=session.get('reciever_office')) }}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-plus-circle-fill"></i>
+        Recieve Memo
+    </a>
+</div>
+
+{% endblock %}  

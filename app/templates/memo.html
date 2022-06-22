@@ -33,12 +33,32 @@
             </tr>
         </tbody>
     </table>
+
+    <table class="table table-borderless table-sm table-hover w-25">
+        <thead>
+            <tr>
+                <th>Sent To</th>
+                <th>Date Sent</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in memo.recipients %}
+                <tr>
+                    <td>{{ m.recipient_office_name }}</td>
+                    <td>{{ m.timestamp.date() }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     
     <a href="{{ url_for('memo.update_memo', memo_id=memo.id) }}" class="btn btn-sm btn-outline-secondary">
         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
         Edit
     </a>&#160;
-
+    <a href="{{ url_for('memo.send_memo', memo_id=memo.id) }}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-send-fill"></i>
+        Send Memo
+    </a>  
 </div>
 
 {% endblock %}

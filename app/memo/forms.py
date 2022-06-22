@@ -1,7 +1,7 @@
 from flask import session
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms.fields import StringField, TextAreaField, SubmitField, SelectField
+from wtforms.fields import StringField, TextAreaField, SubmitField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, Length
 from wtforms.fields.html5 import DateField
 from ..models import User, Office
@@ -18,7 +18,7 @@ class RecieveMemoForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(RecieveMemoForm, self).__init__(*args, **kwargs)
-        # get index of logged in office in the array of Office.query.all() and pop the current office out to obtain the list of the other offices
+        # get index of logged in office in the array of Office.query.all() and remove the current office out to obtain the list of the other offices
         # this is done so the logged in office cant send a memo to itself
     
         # use a lambda function with mapping to obtain a new list of just the usernames of the other users/offices(later on)
@@ -48,7 +48,5 @@ class FilterMemoForm(FlaskForm):
 
 
 class SendMemoForm(FlaskForm):
-    # recipient 
-    pass
-
-    
+    recipient_offices = SelectMultipleField('Select Recipient Offices')
+    submit = SubmitField('Send Memo')

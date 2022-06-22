@@ -1,8 +1,8 @@
 from flask import redirect, render_template, url_for, session, flash, request, send_from_directory, current_app
 from . import memo
-from .forms import RecieveMemoForm, UpdateMemoForm, FilterMemoForm
+from .forms import RecieveMemoForm, UpdateMemoForm, FilterMemoForm, SendMemoForm
 from ..decorators import login_required
-from ..models import Memo, User, Office
+from ..models import Memo, User, Office, Recipients
 from .. import db, create_app
 from werkzeug.utils import secure_filename
 from sqlalchemy import func, and_
@@ -18,7 +18,7 @@ def download_file(name):
 @memo.route('/memos/recieve/<officename>', methods=['GET','POST'])
 @login_required
 def recieve_memo(officename):
-    user = user = User.query.get(session.get('id'))
+    user = User.query.get(session.get('id'))
     # session['reciever_office'] = officename
     form = RecieveMemoForm()
     office = Office.query.filter_by(office_name=officename).first()
@@ -41,7 +41,8 @@ def recieve_memo(officename):
             description=form.description.data,
             note_attached=filename,
             sender_office = form.sender_office.data,
-            reciever_id=reciever_office.id)
+            recieved_by = user.username,
+            office_reciever_id=reciever_office.id)
         db.session.add(memo)
         db.session.commit()
         flash('Memo recieved successfully!', 'success')
@@ -67,6 +68,7 @@ def recieved_memos(officename):
 
 
 @memo.route('/memos/recieved/<officename>/<start_date>/<end_date>')
+@login_required
 def filtered_memos(officename, start_date, end_date):
     page = request.args.get('page', 1, type=int)
 
@@ -106,6 +108,7 @@ def recieved_memos_full(officename):
 
     
 @memo.route('/memos/<int:memo_id>/update', methods=['GET','POST'])
+@login_required
 def update_memo(memo_id):
     memo = Memo.query.get_or_404(memo_id)
     filename=memo.note_attached
@@ -136,12 +139,14 @@ def update_memo(memo_id):
 
 
 @memo.route('/memos/<int:memo_id>')
+@login_required
 def view_memo(memo_id):
     memo = Memo.query.get_or_404(memo_id)
     return render_template('memo.html', memo=memo)
 
 
 @memo.route('/memos/filter', methods=['GET','POST'])
+@login_required
 def filter_memos():
     form = FilterMemoForm()
     if form.validate_on_submit():
@@ -151,3 +156,39 @@ def filter_memos():
         session['end_date'] = end_date
         return redirect(url_for('memo.filtered_memos',officename=session.get('reciever_office'), start_date=form.start_date.data, end_date=form.end_date.data))
     return render_template('filter_memos.html', form=form)
+
+
+@memo.route('/memos/<memo_id>/send', methods=['GET','POST'])
+@login_required
+def send_memo(memo_id):
+    memo = Memo.query.get_or_404(memo_id)
+    form = SendMemoForm()
+    # get logged-in user 
+    user_id = session.get('id')
+    user = User.query.get_or_404(user_id)
+    current_office = user.office
+    # recipient_choices = Office.query.all()
+    # recipient_choices.remove(current_office)
+
+    # obtain a list of the recipients OFFICENAMES using the current memo recipients (memo.recipients)
+    memo_recipients_names = list(map(lambda x: x.recipient_office_name, memo.recipients)) 
+    # using list comprehension create tuples of office names asides the current office
+    # the first and second values of each tuple corresponding to the value and name of each selectfield option
+    recipient_choices = [
+        (office.office_name, office.office_name) for office in Office.query.all() if office.office_name != current_office and office.office_name not in memo_recipients_names
+        ]
+    form.recipient_offices.choices = recipient_choices
+    
+    print(form.validate_on_submit())
+    if form.validate_on_submit():
+        recipients = form.recipient_offices.data
+        print(recipients)
+        for recipient in recipients:
+            r = Recipients(recipient_office_name=recipient,
+                recieved_memo_id=memo_id)
+            db.session.add(r)
+        memo.sent = True
+        db.session.commit()
+        flash('Memo sent successfully!','success')
+        return redirect(url_for('memo.view_memo', memo_id=memo.id))
+    return render_template('send_memo.html', form=form)

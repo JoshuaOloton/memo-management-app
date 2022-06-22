@@ -20,13 +20,14 @@
                 <th colspan=""><input type="text" class="form-control search_descr" placeholder="Search Description" id="" onkeyup="myFunction()"></th>
                 <!-- <th><input type="text" class="form-control" placeholder="Search Date Added" id=""></th> -->
                 <th colspan="2"><input type="text" class="form-control search_source" placeholder="Search Sender Office" id="" onkeyup="myFunction()"></th>
-            </t r>
+            </tr>
             <tr>
-                <th style="width: 17%;">Memo Title</th>
-                <th style="width: 16%;">Date Recieved</th>
-                <th style="width: 34%;">Description</th>
-                <th style="width: 18%;">Attatchment</th>
-                <th style="width: 15%;">Sender Office</th>
+                <th style="width: 15%;">Memo Title</th>
+                <th style="width: 14%;">Date Recieved</th>
+                <th style="width: 28%;">Description</th>
+                <th style="width: 15%;">Attatchment</th>
+                <th style="width: 14%;">Sender Office</th>
+                <th style="width: 14%;">Recieved By</th>
             </tr>
         </thead>
         <tbody>
@@ -45,6 +46,7 @@
                         </a>
                     </td>
                 <td>{{ memo.sender_office }}</td>
+                <td>{{ memo.recieved_by }}</td>
                 </tr>
             {% endfor %}
         </tbody>

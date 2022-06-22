@@ -1,4 +1,4 @@
-// search bars for title, description and reciever
+// search  bars for title, description and reciever
 function myFunction() {
     // Declare variables
     var title_input, descr_input, source_input, title_filter, descr_filter, source_filter, table, tr, td1, td2, td3, i, j,txtValue1, txtValue2, txtValue3;

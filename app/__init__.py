@@ -14,7 +14,7 @@ def create_app(config_name='default'):
 
     db.init_app(app)
     moment.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db, render_as_batch=True)
 
     # register blueprint(s)
     from .main import main as main_blueprint
@@ -25,5 +25,8 @@ def create_app(config_name='default'):
 
     from .memo import memo as memo_blueprint
     app.register_blueprint(memo_blueprint)
+
+    from .api import api as api_blueprint
+    app.register_blueprint(api_blueprint, url_prefix='/api/v1')
 
     return app

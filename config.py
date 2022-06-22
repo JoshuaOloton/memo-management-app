@@ -8,7 +8,7 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:next23rd@localhost/memo_management_db'
     DEBUG = True
     UPLOAD_FOLDER = r'static\uploads'
-    MEMOS_PER_PAGE = 20
+    MEMOS_PER_PAGE = 2
 
 config = {
     'development': DevelopmentConfig,
